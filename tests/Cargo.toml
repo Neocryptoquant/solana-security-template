@@ -1,0 +1,17 @@
+[package]
+name = "security-template-tests"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anchor-lang = "0.32.1"
+litesvm = "0.3"
+solana-sdk = "2.0"
+signer-authorization = { path = "../programs/signer-authorization", features = ["no-entrypoint"] }
+
+[lib]
+path = "src/lib.rs"
+
+[[test]]
+name = "signer_authorization"
+path = "src/signer_authorization.rs"
