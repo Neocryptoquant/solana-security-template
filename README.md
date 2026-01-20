@@ -1,18 +1,18 @@
 # Solana Security Template
 
-A collection of Solana programs demonstrating common vulnerabilities and their fixes. Each program includes insecure and secure implementations with LiteSVM tests.
+A collection of Solana programs demonstrating common vulnerabilities and their fixes. Each program includes insecure and secure implementations with LiteSVM tests on each program.
 
 ## Requirements
 
-- Rust 1.89.0+
-- Solana CLI 3.0.x
+- Rust 1.89.0
+- Solana CLI 3.0.11
 - Anchor 0.32.1
 
 ## Setup
 
 ```bash
 # Clone
-git clone <repo>
+git clone https://github.com/Ubuntu-Technologies/solana-security-template.git
 cd solana-security-template
 
 # Build all programs
@@ -38,7 +38,7 @@ anchor run test
 
 Two consolidated programs showing multiple vulnerabilities in a realistic context:
 
-**buggy-amm** - All vulnerabilities combined:
+**buggy-amm** - All vulnerabilities combined in a program that still works:
 - Weak PDA seeds (`b"config"` only)
 - No token account ownership validation
 - Unchecked `u64 * u64` overflow
@@ -140,10 +140,7 @@ p_escrow               3 tests
 amm                    6 tests
 ```
 
-Each test demonstrates:
-1. Insecure version accepts the attack
-2. Secure version rejects the attack
-3. Normal operations work on both
+Each test demonstrates that the insecure version accepts the attack, while the secure version mitigates the attack. Normal operations work on both versions.
 
 ## Project Structure
 
@@ -176,7 +173,7 @@ tests/
 | Component | Version |
 |-----------|---------|
 | Rust | 1.89.0 |
-| Solana CLI | 3.0.x |
+| Solana CLI | 3.0.11 |
 | Anchor | 0.32.1 |
 | Pinocchio | 0.9.2 / 0.10 |
 | LiteSVM | 0.6.1 |
