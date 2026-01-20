@@ -10,8 +10,8 @@ use pinocchio::{
     nostd_panic_handler, AccountView, Address,
 };
 
-mod insecure;
 mod secure;
+mod vulnerable;
 
 entrypoint!(process_instruction);
 nostd_panic_handler!();
@@ -27,7 +27,7 @@ pub fn process_instruction(
         .ok_or(ProgramError::InvalidInstructionData)?;
 
     match instruction {
-        0 => insecure::process_read_config(program_id, accounts),
+        0 => vulnerable::process_read_config(program_id, accounts),
         1 => secure::process_read_config(program_id, accounts),
         2 => initialize_config(program_id, accounts, instruction_data),
         _ => Err(ProgramError::InvalidInstructionData),

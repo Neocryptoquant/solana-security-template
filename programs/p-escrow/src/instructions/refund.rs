@@ -1,9 +1,9 @@
-//! Refund instructions - INSECURE vs SECURE
+//! Refund instructions - VULNERABLE vs SECURE
 //!
-//! VULNERABILITY: In insecure_refund, we don't verify that the destination
+//! VULNERABILITY: In vulnerable_refund, we don't verify that the destination
 //! for the refunded tokens matches the original maker. An attacker can:
 //! 1. Find an active escrow
-//! 2. Call insecure_refund with THEIR address as destination
+//! 2. Call vulnerable_refund with THEIR address as destination
 //! 3. Steal the escrowed tokens
 
 use pinocchio::{
@@ -15,8 +15,8 @@ use pinocchio::{
 
 use crate::state::Escrow;
 
-/// INSECURE: Refund without validating the recipient
-pub fn process_insecure_refund(accounts: &[AccountInfo], _data: &[u8]) -> ProgramResult {
+/// VULNERABLE: Refund without validating the recipient
+pub fn process_vulnerable_refund(accounts: &[AccountInfo], _data: &[u8]) -> ProgramResult {
     let [
         _caller,          // Anyone can call!
         escrow_account,

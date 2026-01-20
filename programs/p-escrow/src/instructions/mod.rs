@@ -4,7 +4,7 @@ pub mod make;
 pub mod refund;
 
 pub use make::process_make;
-pub use refund::{process_insecure_refund, process_secure_refund};
+pub use refund::{process_secure_refund, process_vulnerable_refund};
 
 use pinocchio::{account_info::AccountInfo, ProgramResult};
 

@@ -14,8 +14,8 @@ use pinocchio::{
     nostd_panic_handler, AccountView, Address,
 };
 
-mod insecure;
 mod secure;
+mod vulnerable;
 
 entrypoint!(process_instruction);
 nostd_panic_handler!();
@@ -35,8 +35,8 @@ pub fn process_instruction(
         .ok_or(ProgramError::InvalidInstructionData)?;
 
     match instruction {
-        // 0 = Insecure: Read user without discriminator check
-        0 => insecure::process_action(program_id, accounts),
+        // 0 = Vulnerable: Read user without discriminator check
+        0 => vulnerable::process_action(program_id, accounts),
         // 1 = Secure: Read user WITH discriminator verification
         1 => secure::process_action(program_id, accounts),
         // 2 = Initialize user account

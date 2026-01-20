@@ -4,13 +4,13 @@ use anchor_lang::prelude::*;
 
 pub mod error;
 pub mod initialize;
-pub mod insecure;
 pub mod secure;
 pub mod state;
+pub mod vulnerable;
 
 use initialize::*;
-use insecure::*;
 use secure::*;
+use vulnerable::*;
 
 declare_id!("EXnhqXwkDbL63d2UPbERQ4BQSubRyLHwCJLiKhhW7zba");
 
@@ -28,9 +28,9 @@ pub mod signer_authorization {
         ctx.accounts.deposit(amount)
     }
 
-    /// INSECURE: Withdraw without proper signer validation.
+    /// VULNERABLE: Withdraw without proper signer validation.
     /// Demonstrates the vulnerability - anyone can drain funds.
-    pub fn insecure_withdraw(ctx: Context<InsecureWithdraw>, amount: u64) -> Result<()> {
+    pub fn vulnerable_withdraw(ctx: Context<VulnerableWithdraw>, amount: u64) -> Result<()> {
         ctx.accounts.withdraw(amount)
     }
 

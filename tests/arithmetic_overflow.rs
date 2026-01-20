@@ -68,7 +68,7 @@ mod tests {
     }
 
     #[test]
-    fn test_insecure_swap_overflow() {
+    fn test_vulnerable_swap_overflow() {
         let (mut svm, user) = setup();
         let pid = program_id();
         let (pool_pda, bump) = derive_pool_pda(&user.pubkey(), &pid);
@@ -97,7 +97,7 @@ mod tests {
         let exploit_amount = u64::MAX / 4;
         let min_out: u64 = 1;
 
-        let mut data = discriminator("insecure_swap").to_vec();
+        let mut data = discriminator("vulnerable_swap").to_vec();
         data.extend_from_slice(&exploit_amount.to_le_bytes());
         data.extend_from_slice(&min_out.to_le_bytes());
 
@@ -113,7 +113,7 @@ mod tests {
         let msg = Message::new(&[ix], Some(&user.pubkey()));
         let tx = Transaction::new(&[&user], msg, svm.latest_blockhash());
         let result = svm.send_transaction(tx);
-        println!("Insecure swap with overflow input: {:?}", result);
+        println!("Vulnerable swap with overflow input: {:?}", result);
     }
 
     #[test]

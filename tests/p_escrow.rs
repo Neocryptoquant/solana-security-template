@@ -59,7 +59,7 @@ mod tests {
     }
 
     #[test]
-    fn test_insecure_refund_allows_theft() {
+    fn test_vulnerable_refund_allows_theft() {
         let (mut svm, maker) = setup();
         let attacker = Keypair::new();
         let pid = program_id();
@@ -87,7 +87,7 @@ mod tests {
         let vault = Pubkey::new_unique();
         let attacker_dest = Pubkey::new_unique();
 
-        // Insecure refund (discriminator = 2) - attacker redirects to their address
+        // Vulnerable refund (discriminator = 2) - attacker redirects to their address
         let ix = Instruction {
             program_id: pid,
             accounts: vec![
@@ -97,13 +97,13 @@ mod tests {
                 AccountMeta::new(attacker_dest, false), // attacker's destination!
                 AccountMeta::new_readonly(spl_token_2022::ID, false),
             ],
-            data: vec![2], // InsecureRefund
+            data: vec![2], // VulnerableRefund
         };
 
         let msg = Message::new(&[ix], Some(&attacker.pubkey()));
         let tx = Transaction::new(&[&attacker], msg, svm.latest_blockhash());
         let result = svm.send_transaction(tx);
-        println!("Insecure refund (attacker theft attempt): {:?}", result);
+        println!("Vulnerable refund (attacker theft attempt): {:?}", result);
     }
 
     #[test]

@@ -2,7 +2,7 @@
 
 use anchor_lang::prelude::*;
 
-/// User account with weak seeds (insecure version)
+/// User account with weak seeds (vulnerable version)
 #[account]
 #[derive(InitSpace)]
 pub struct WeakUserAccount {

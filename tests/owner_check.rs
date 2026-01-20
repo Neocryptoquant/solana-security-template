@@ -46,7 +46,7 @@ mod tests {
     }
 
     #[test]
-    fn test_insecure_accepts_fake_config() {
+    fn test_vulnerable_accepts_fake_config() {
         let (mut svm, admin) = setup();
         let attacker = Keypair::new();
         let pid = program_id();
@@ -72,7 +72,7 @@ mod tests {
         .unwrap();
 
         // Create FAKE config with attacker as admin
-        // VULNERABILITY: Different owner (system program), but insecure code doesn't check!
+        // VULNERABILITY: Different owner (system program), but vulnerable code doesn't check!
         let fake_config = Pubkey::new_unique();
         let mut fake_data = vec![0u8; 32];
         fake_data.copy_from_slice(attacker.pubkey().as_ref());
@@ -89,22 +89,22 @@ mod tests {
         )
         .unwrap();
 
-        // Insecure instruction (discriminator = 0)
+        // Vulnerable instruction (discriminator = 0)
         let ix = Instruction {
             program_id: pid,
             accounts: vec![
                 AccountMeta::new(fake_config, false), // Pass fake config!
                 AccountMeta::new_readonly(attacker.pubkey(), true),
             ],
-            data: vec![0], // Insecure variant
+            data: vec![0], // Vulnerable variant
         };
 
         let msg = Message::new(&[ix], Some(&attacker.pubkey()));
         let tx = Transaction::new(&[&attacker], msg, svm.latest_blockhash());
 
-        // In insecure version, this might succeed with fake config
+        // In vulnerable version, this might succeed with fake config
         let result = svm.send_transaction(tx);
-        println!("Insecure with fake config: {:?}", result);
+        println!("Vulnerable with fake config: {:?}", result);
     }
 
     #[test]

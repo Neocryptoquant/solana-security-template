@@ -1,4 +1,4 @@
-//! INSECURE: Missing Owner Check
+//! VULNERABLE: Missing Owner Check
 //!
 //! VULNERABILITY:
 //! - We read the "admin" pubkey from a config account
@@ -12,7 +12,7 @@ use pinocchio::{
     AccountView, Address,
 };
 
-/// INSECURE: Read admin from config without owner verification
+/// VULNERABLE: Read admin from config without owner verification
 pub fn process_read_config(
     _program_id: &Address, // NOTE: We ignore program_id - the bug!
     accounts: &[AccountView],
@@ -40,7 +40,7 @@ pub fn process_read_config(
         return Err(ProgramError::InvalidAccountData);
     }
 
-    // INSECURE: Admin action executed from unverified account
+    // VULNERABLE: Admin action executed from unverified account
     // In a real program, this would do something privileged...
 
     Ok(())

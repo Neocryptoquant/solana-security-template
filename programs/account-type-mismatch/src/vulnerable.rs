@@ -1,4 +1,4 @@
-//! INSECURE: Missing Discriminator Check
+//! VULNERABLE: Missing Discriminator Check
 //!
 //! VULNERABILITY:
 //! The program expects a "User" account but doesn't check the discriminator.
@@ -8,7 +8,7 @@
 //!
 //! ATTACK:
 //! 1. Create an Admin account with attacker as the pubkey
-//! 2. Call insecure action with Admin account instead of User
+//! 2. Call vulnerable action with Admin account instead of User
 //! 3. Program reads Admin.permissions as User.balance
 //! 4. Attacker gets unauthorized access
 
@@ -19,7 +19,7 @@ use pinocchio::{
     AccountView, Address,
 };
 
-/// INSECURE: Read user data without type verification
+/// VULNERABLE: Read user data without type verification
 pub fn process_action(program_id: &Address, accounts: &[AccountView]) -> ProgramResult {
     let user_account = accounts.first().ok_or(ProgramError::NotEnoughAccountKeys)?;
 
@@ -56,7 +56,7 @@ pub fn process_action(program_id: &Address, accounts: &[AccountView]) -> Program
         return Err(ProgramError::InvalidAccountData);
     }
 
-    // INSECURE: Using "balance" which could actually be "permissions"
+    // VULNERABLE: Using "balance" which could actually be "permissions"
     // This could lead to privilege escalation
 
     Ok(())

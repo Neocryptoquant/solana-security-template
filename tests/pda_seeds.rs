@@ -103,7 +103,7 @@ mod tests {
     }
 
     #[test]
-    fn test_insecure_create_user() {
+    fn test_vulnerable_create_user() {
         let (mut svm, user) = setup();
         let pid = program_id();
 
@@ -116,13 +116,13 @@ mod tests {
                 AccountMeta::new(weak_pda, false),
                 AccountMeta::new_readonly(solana_sdk_ids::system_program::ID, false),
             ],
-            data: discriminator("insecure_create_user").to_vec(),
+            data: discriminator("vulnerable_create_user").to_vec(),
         };
 
         let msg = Message::new(&[ix], Some(&user.pubkey()));
         let tx = Transaction::new(&[&user], msg, svm.latest_blockhash());
         let result = svm.send_transaction(tx);
-        println!("Insecure create user: {:?}", result);
+        println!("Vulnerable create user: {:?}", result);
     }
 
     #[test]

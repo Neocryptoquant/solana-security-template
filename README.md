@@ -1,6 +1,6 @@
 # Solana Security Template
 
-A collection of Solana programs demonstrating common vulnerabilities and their fixes. Each program includes insecure and secure implementations with LiteSVM tests on each program.
+A collection of Solana programs demonstrating common vulnerabilities and their fixes. Each program includes vulnerable and secure implementations with LiteSVM tests on each program.
 
 ## Requirements
 
@@ -52,7 +52,7 @@ Two consolidated programs showing multiple vulnerabilities in a realistic contex
 ### 1. Missing Signer Check
 
 ```rust
-// INSECURE: No verification that authority signed
+// VULNERABLE: No verification that authority signed
 pub authority: AccountInfo<'info>,
 
 // SECURE: Anchor's Signer constraint
@@ -62,7 +62,7 @@ pub authority: Signer<'info>,
 ### 2. Arithmetic Overflow
 
 ```rust
-// INSECURE: Wraps on large values
+// VULNERABLE: Wraps on large values
 let result = a * b;
 
 // SECURE: Returns error on overflow
@@ -72,7 +72,7 @@ let result = a.checked_mul(b).ok_or(ErrorCode::Overflow)?;
 ### 3. Missing Owner Check
 
 ```rust
-// INSECURE: Trusts account data without owner verification
+// VULNERABLE: Trusts account data without owner verification
 let data = account.data.borrow();
 
 // SECURE: Verify owner before reading
@@ -84,7 +84,7 @@ if account.owner != program_id {
 ### 4. Weak PDA Seeds
 
 ```rust
-// INSECURE: Globally predictable
+// VULNERABLE: Globally predictable
 seeds = [b"config"]
 
 // SECURE: Unique per user
@@ -94,7 +94,7 @@ seeds = [b"config", user.key().as_ref(), &nonce.to_le_bytes()]
 ### 5. Account Revival
 
 ```rust
-// INSECURE: Just transfer lamports
+// VULNERABLE: Just transfer lamports
 **dest.lamports.borrow_mut() += account.lamports();
 **account.lamports.borrow_mut() = 0;
 
@@ -106,7 +106,7 @@ account.close(dest)?;
 ### 6. Missing Discriminator
 
 ```rust
-// INSECURE: No type identification
+// VULNERABLE: No type identification
 struct UserData { balance: u64 }
 
 // SECURE: First byte identifies type
@@ -116,7 +116,7 @@ struct UserData { discriminator: u8, balance: u64 }
 ### 7. Missing Refund Validation
 
 ```rust
-// INSECURE: Anyone can redirect refund
+// VULNERABLE: Anyone can redirect refund
 let destination = accounts[3];
 
 // SECURE: Verify caller is maker
@@ -140,7 +140,7 @@ p_escrow               3 tests
 amm                    6 tests
 ```
 
-Each test demonstrates that the insecure version accepts the attack, while the secure version mitigates the attack. Normal operations work on both versions.
+Each test demonstrates that the vulnerable version accepts the attack, while the secure version mitigates the attack. Normal operations work on both versions.
 
 ## Project Structure
 

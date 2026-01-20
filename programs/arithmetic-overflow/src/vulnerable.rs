@@ -11,7 +11,7 @@ use crate::state::Pool;
 // ---------------------------------------------------------------------------
 
 #[derive(Accounts)]
-pub struct InsecureSwap<'info> {
+pub struct VulnerableSwap<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
@@ -23,7 +23,7 @@ pub struct InsecureSwap<'info> {
     pub pool: Account<'info, Pool>,
 }
 
-impl<'info> InsecureSwap<'info> {
+impl<'info> VulnerableSwap<'info> {
     /// Swap X for Y using vulnerable arithmetic.
     /// DANGER: No overflow protection, no precision handling.
     pub fn swap_x_for_y(&mut self, amount_in: u64, _min_out: u64) -> Result<u64> {

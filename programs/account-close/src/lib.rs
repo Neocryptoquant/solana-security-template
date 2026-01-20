@@ -11,12 +11,12 @@
 use anchor_lang::prelude::*;
 
 pub mod error;
-pub mod insecure;
 pub mod secure;
 pub mod state;
+pub mod vulnerable;
 
-use insecure::*;
 use secure::*;
+use vulnerable::*;
 
 declare_id!("Cnji8fAoqzDyJaR1D2MXyk2hgyixZBoSf5UmN6SegpFf");
 
@@ -29,9 +29,9 @@ pub mod account_close {
         ctx.accounts.initialize(&ctx.bumps)
     }
 
-    /// INSECURE: Close account without zeroing data
+    /// VULNERABLE: Close account without zeroing data
     /// Vulnerable to revival attack
-    pub fn insecure_close(ctx: Context<InsecureClose>) -> Result<()> {
+    pub fn vulnerable_close(ctx: Context<VulnerableClose>) -> Result<()> {
         ctx.accounts.close()
     }
 

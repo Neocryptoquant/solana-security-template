@@ -64,7 +64,7 @@ mod tests {
     }
 
     #[test]
-    fn test_insecure_accepts_wrong_account_type() {
+    fn test_vulnerable_accepts_wrong_account_type() {
         let (mut svm, user) = setup();
         let pid = program_id();
 
@@ -84,21 +84,21 @@ mod tests {
         )
         .unwrap();
 
-        // Insecure instruction (discriminator = 0) - doesn't check account type
+        // Vulnerable instruction (discriminator = 0) - doesn't check account type
         let ix = Instruction {
             program_id: pid,
             accounts: vec![
                 AccountMeta::new(admin_account, false), // Pass admin as user!
                 AccountMeta::new_readonly(user.pubkey(), true),
             ],
-            data: vec![0], // Insecure variant
+            data: vec![0], // Vulnerable variant
         };
 
         let msg = Message::new(&[ix], Some(&user.pubkey()));
         let tx = Transaction::new(&[&user], msg, svm.latest_blockhash());
         let result = svm.send_transaction(tx);
         // May succeed - reading admin.permissions as user.balance
-        println!("Insecure with wrong account type: {:?}", result);
+        println!("Vulnerable with wrong account type: {:?}", result);
     }
 
     #[test]

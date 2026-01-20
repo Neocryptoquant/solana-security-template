@@ -1,7 +1,7 @@
 //! Tests for the Signer Authorization vulnerability
 //!
 //! Demonstrates:
-//! - Insecure: Attacker can withdraw without being the authority
+//! - Vulnerable: Attacker can withdraw without being the authority
 //! - Secure: Only the vault authority can withdraw
 
 #[cfg(test)]
@@ -64,7 +64,7 @@ mod tests {
     }
 
     #[test]
-    fn test_insecure_withdraw_allows_attacker() {
+    fn test_vulnerable_withdraw_allows_attacker() {
         let (mut svm, authority) = setup();
         let attacker = Keypair::new();
         let pid = program_id();
@@ -91,8 +91,8 @@ mod tests {
         )
         .unwrap();
 
-        // Try insecure_withdraw as attacker
-        let mut data = discriminator("insecure_withdraw").to_vec();
+        // Try vulnerable_withdraw as attacker
+        let mut data = discriminator("vulnerable_withdraw").to_vec();
         data.extend_from_slice(&LAMPORTS_PER_SOL.to_le_bytes());
 
         let ix = Instruction {
@@ -110,7 +110,7 @@ mod tests {
 
         // This demonstrates the vulnerability - attacker can call without authority sig
         let result = svm.send_transaction(tx);
-        println!("Insecure withdraw result: {:?}", result);
+        println!("Vulnerable withdraw result: {:?}", result);
     }
 
     #[test]

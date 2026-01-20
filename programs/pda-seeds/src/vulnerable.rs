@@ -1,4 +1,4 @@
-//! INSECURE: Weak PDA Seeds
+//! VULNERABLE: Weak PDA Seeds
 //!
 //! VULNERABILITY:
 //! 1. Seeds only include user pubkey - easily predictable
@@ -10,7 +10,7 @@ use crate::state::WeakUserAccount;
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
-pub struct InsecureCreateUser<'info> {
+pub struct VulnerableCreateUser<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
@@ -31,8 +31,8 @@ pub struct InsecureCreateUser<'info> {
     pub system_program: Program<'info, System>,
 }
 
-impl<'info> InsecureCreateUser<'info> {
-    pub fn create_user(&mut self, bumps: &InsecureCreateUserBumps) -> Result<()> {
+impl<'info> VulnerableCreateUser<'info> {
+    pub fn create_user(&mut self, bumps: &VulnerableCreateUserBumps) -> Result<()> {
         self.user_account.owner = self.user.key();
         self.user_account.data = 0;
         self.user_account.bump = bumps.user_account;
@@ -41,7 +41,7 @@ impl<'info> InsecureCreateUser<'info> {
 }
 
 #[derive(Accounts)]
-pub struct InsecureUpdate<'info> {
+pub struct VulnerableUpdate<'info> {
     pub user: Signer<'info>,
 
     // ---------------------------------------------------------------------------
@@ -56,7 +56,7 @@ pub struct InsecureUpdate<'info> {
     pub user_account: Account<'info, WeakUserAccount>,
 }
 
-impl<'info> InsecureUpdate<'info> {
+impl<'info> VulnerableUpdate<'info> {
     pub fn update(&mut self, data: u64) -> Result<()> {
         self.user_account.data = data;
         Ok(())

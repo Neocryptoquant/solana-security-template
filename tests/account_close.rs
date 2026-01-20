@@ -73,7 +73,7 @@ mod tests {
     }
 
     #[test]
-    fn test_insecure_close_data_not_zeroed() {
+    fn test_vulnerable_close_data_not_zeroed() {
         let (mut svm, owner) = setup();
         let pid = program_id();
         let (user_pda, bump) = derive_user_pda(&owner.pubkey(), &pid);
@@ -92,20 +92,20 @@ mod tests {
         )
         .unwrap();
 
-        // Call insecure_close
+        // Call vulnerable_close
         let ix = Instruction {
             program_id: pid,
             accounts: vec![
                 AccountMeta::new(owner.pubkey(), true),
                 AccountMeta::new(user_pda, false),
             ],
-            data: discriminator("insecure_close").to_vec(),
+            data: discriminator("vulnerable_close").to_vec(),
         };
 
         let msg = Message::new(&[ix], Some(&owner.pubkey()));
         let tx = Transaction::new(&[&owner], msg, svm.latest_blockhash());
         let result = svm.send_transaction(tx);
-        println!("Insecure close result: {:?}", result);
+        println!("Vulnerable close result: {:?}", result);
         // After close, if account receives lamports, data may still be readable
     }
 

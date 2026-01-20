@@ -10,7 +10,7 @@ use crate::state::Vault;
 // ---------------------------------------------------------------------------
 
 #[derive(Accounts)]
-pub struct InsecureWithdraw<'info> {
+pub struct VulnerableWithdraw<'info> {
     #[account(
         mut,
         seeds = [b"vault", authority.key().as_ref()],
@@ -27,7 +27,7 @@ pub struct InsecureWithdraw<'info> {
     pub destination: UncheckedAccount<'info>,
 }
 
-impl<'info> InsecureWithdraw<'info> {
+impl<'info> VulnerableWithdraw<'info> {
     /// Withdraw lamports from vault.
     /// DANGER: No signature verification - anyone can drain!
     pub fn withdraw(&mut self, amount: u64) -> Result<()> {

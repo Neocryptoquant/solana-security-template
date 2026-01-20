@@ -31,7 +31,7 @@ pub static ID: Pubkey = unsafe {
 pub enum EscrowInstruction {
     Make = 0,
     Take = 1,
-    InsecureRefund = 2,
+    VulnerableRefund = 2,
     SecureRefund = 3,
 }
 
@@ -42,7 +42,7 @@ impl TryFrom<&u8> for EscrowInstruction {
         match value {
             0 => Ok(Self::Make),
             1 => Ok(Self::Take),
-            2 => Ok(Self::InsecureRefund),
+            2 => Ok(Self::VulnerableRefund),
             3 => Ok(Self::SecureRefund),
             _ => Err(pinocchio::program_error::ProgramError::InvalidInstructionData),
         }
@@ -66,7 +66,9 @@ pub fn process_instruction(
     match EscrowInstruction::try_from(discriminator)? {
         EscrowInstruction::Make => instructions::process_make(accounts, data),
         EscrowInstruction::Take => instructions::process_take(accounts, data),
-        EscrowInstruction::InsecureRefund => instructions::process_insecure_refund(accounts, data),
+        EscrowInstruction::VulnerableRefund => {
+            instructions::process_vulnerable_refund(accounts, data)
+        }
         EscrowInstruction::SecureRefund => instructions::process_secure_refund(accounts, data),
     }
 }

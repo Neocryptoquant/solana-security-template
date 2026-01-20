@@ -1,4 +1,4 @@
-//! INSECURE: Account Close Without Proper Cleanup
+//! VULNERABLE: Account Close Without Proper Cleanup
 //!
 //! VULNERABILITY:
 //! 1. Account data is not zeroed before closing
@@ -41,7 +41,7 @@ impl<'info> Initialize<'info> {
 }
 
 #[derive(Accounts)]
-pub struct InsecureClose<'info> {
+pub struct VulnerableClose<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
 
@@ -59,7 +59,7 @@ pub struct InsecureClose<'info> {
     pub user_account: Account<'info, UserAccount>,
 }
 
-impl<'info> InsecureClose<'info> {
+impl<'info> VulnerableClose<'info> {
     pub fn close(&mut self) -> Result<()> {
         // Just closing - no data cleanup
         // After this, if account receives lamports it's "alive" again

@@ -4,13 +4,13 @@ use anchor_lang::prelude::*;
 
 pub mod error;
 pub mod initialize;
-pub mod insecure;
 pub mod secure;
 pub mod state;
+pub mod vulnerable;
 
 use initialize::*;
-use insecure::*;
 use secure::*;
+use vulnerable::*;
 
 declare_id!("Ar1thM3t1c111111111111111111111111111111111");
 
@@ -29,9 +29,13 @@ pub mod arithmetic_overflow {
             .initialize(&ctx.bumps, initial_x, initial_y, fee_bps)
     }
 
-    /// INSECURE: Swap X for Y with vulnerable arithmetic.
+    /// VULNERABLE: Swap X for Y with vulnerable arithmetic.
     /// Demonstrates overflow and precision loss.
-    pub fn insecure_swap(ctx: Context<InsecureSwap>, amount_in: u64, min_out: u64) -> Result<u64> {
+    pub fn vulnerable_swap(
+        ctx: Context<VulnerableSwap>,
+        amount_in: u64,
+        min_out: u64,
+    ) -> Result<u64> {
         ctx.accounts.swap_x_for_y(amount_in, min_out)
     }
 
