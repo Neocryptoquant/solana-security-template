@@ -1,0 +1,33 @@
+# Trident Configuration
+# See: https://ackee.xyz/trident/docs/latest/
+
+[fuzz]
+# Fuzzing timeout in seconds (0 = no timeout)
+timeout = 0
+
+# Number of fuzzing iterations (0 = unlimited)
+iterations = 10000
+
+# Exit on first crash
+exit_on_crash = true
+
+# Threads for parallel fuzzing
+threads = 4
+
+# Seed for deterministic fuzzing (comment out for random)
+# seed = 12345
+
+[fuzz.honggfuzz]
+# Honggfuzz-specific settings
+timeout = 10
+mutations_per_run = 6
+
+[test]
+# Test configuration
+validator_startup_timeout = 30000
+
+[workspace]
+# Programs to include in the fuzz environment
+programs = [
+    "programs/arithmetic-overflow",
+]

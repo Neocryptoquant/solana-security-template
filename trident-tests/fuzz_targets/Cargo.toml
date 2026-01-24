@@ -1,0 +1,13 @@
+[package]
+name = "fuzz_targets"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "fuzz_arithmetic"
+path = "fuzz_arithmetic.rs"
+
+[dependencies]
+
+[dev-dependencies]
