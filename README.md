@@ -35,6 +35,9 @@ anchor run build-all
 
 # Run tests
 anchor run test
+
+# Run fuzz tests (optional)
+cd trident-tests/fuzz_targets && cargo test
 ```
 
 ### Learning Path
@@ -204,8 +207,8 @@ Each program contains:
 
 ## Additional Resources
 
-- [Security Deep Dive](SECURITY_DEEPDIVE.md) — Full article with attacker perspective
 - [Security Checklist](SECURITY_CHECKLIST.md) — Pre-deployment checklist
+- [Trident Fuzzing](trident-tests/README.md) — Fuzz testing for edge cases
 - [Contributing](CONTRIBUTING.md) — How to contribute
 
 ## Dependencies
@@ -215,6 +218,7 @@ Each program contains:
 | Anchor | 0.32.1 |
 | Pinocchio | 0.9.2 / 0.10 |
 | LiteSVM | 0.6.1 |
+| Trident | 0.12.0 |
 
 ## License
 
