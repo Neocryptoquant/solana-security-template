@@ -38,6 +38,14 @@ path = "p_escrow.rs"
 name = "amm"
 path = "amm.rs"
 
+[[test]]
+name = "account_griefing"
+path = "account_griefing.rs"
+
+[[test]]
+name = "multisig_payer"
+path = "multisig_payer.rs"
+
 [dependencies]
 # LiteSVM 0.6.1 with stable Solana 2.2.x crates
 litesvm = "=0.6.1"
@@ -55,4 +63,5 @@ solana-transaction = "2.2.1"
 solana-sdk-ids = "2.2.1"
 solana-system-interface = "1.0.0"
 serde_json = "1.0"
+sha2 = "0.10"
 spl-token-2022 = { version = "8.0.1", features = ["no-entrypoint"] }

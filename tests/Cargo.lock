@@ -2184,6 +2184,7 @@ dependencies = [
  "borsh 1.6.0",
  "litesvm",
  "serde_json",
+ "sha2 0.10.9",
  "solana-account",
  "solana-instruction",
  "solana-keypair",

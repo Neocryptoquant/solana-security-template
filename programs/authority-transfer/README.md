@@ -15,12 +15,12 @@ Single-step authority transfer is dangerous:
 - No confirmation = no recovery
 
 ```rust
-// ❌ VULNERABLE: Single-step, immediate, irreversible
+// VULNERABLE: Single-step, immediate, irreversible
 pub fn transfer_authority(new_auth: Pubkey) {
     config.authority = new_auth;  // Done! No going back!
 }
 
-// ✅ SECURE: Two-step with confirmation
+// SECURE: Two-step with confirmation
 pub fn propose_authority(new_auth: Pubkey) {
     config.pending_authority = Some(new_auth);  // Step 1
 }
@@ -44,8 +44,8 @@ pub fn accept_authority() {
 |------|---------|
 | `lib.rs` | Program entry points |
 | `state.rs` | Config with pending_authority field |
-| `vulnerable.rs` | ❌ Single-step immediate transfer |
-| `secure.rs` | ✅ Two-step propose/accept pattern |
+| `vulnerable.rs` | Single-step immediate transfer (VULNERABLE) |
+| `secure.rs` | Two-step propose/accept pattern (SECURE) |
 | `error.rs` | Custom error types |
 
 ## Key Differences
@@ -84,9 +84,9 @@ cargo test -p authority-transfer-tests
 
 ## Mitigation Checklist
 
-- [ ] Use two-step (propose/accept) transfer pattern
-- [ ] Check for zero/invalid addresses
-- [ ] Consider adding timelock between propose and accept
-- [ ] Consider requiring multi-sig for authority changes
-- [ ] Add events for off-chain monitoring
-- [ ] Allow proposal cancellation before acceptance
+- Use two-step (propose/accept) transfer pattern
+- Check for zero/invalid addresses
+- Consider adding timelock between propose and accept
+- Consider requiring multi-sig for authority changes
+- Add events for off-chain monitoring
+- Allow proposal cancellation before acceptance

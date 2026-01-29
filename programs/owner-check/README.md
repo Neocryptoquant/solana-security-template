@@ -5,18 +5,18 @@
 
 ## Overview
 
-This program demonstrates the "Missing Owner Check" vulnerability using Pinocchio's low-level API. It shows how failing to verify an account's owner allows attackers to inject malicious data.
+This program demonstrates the Missing Owner Check vulnerability using Pinocchio's low-level API. It shows how failing to verify an account's owner allows attackers to inject malicious data.
 
 ## The Vulnerability
 
 In Solana, account data can be read without restrictions. If a program reads configuration from an account without verifying the account is owned by the program, attackers can pass any account with fake data.
 
 ```rust
-// ❌ VULNERABLE: Read data without checking owner
+// VULNERABLE: Read data without checking owner
 let config_data = config_account.try_borrow()?;
 let admin = &config_data[..32]; // Could be from ANY account!
 
-// ✅ SECURE: Verify owner before reading
+// SECURE: Verify owner before reading
 if config_account.owner() != program_id {
     return Err(ProgramError::IllegalOwner);
 }
@@ -33,7 +33,7 @@ let config_data = config_account.try_borrow()?;
 
 ## Attack Flow
 
-Vulnerable Version:
+### Vulnerable Version
 ```
 Attacker                Program                 Accounts
    |                       |                       |
@@ -42,24 +42,24 @@ Attacker                Program                 Accounts
    |                       |                       |---- Fake Config
    |                       |                       |    (attacker owned)
    |                       |                       |
-   |--- Call instruction --+                       |
+   |--- Call instruction --|                       |
    |    with fake config   |                       |
    |                       |                       |
    |                       +---- NO OWNER CHECK    |
    |                       |                       |
-   |                       +---- Read admin ------+
-   |                       |    (from fake config)|
+   |                       +---- Read admin -------+
+   |                       |    (from fake config) |
    |                       |                       |
-   |                       +---- Grant attacker --+
-   |                       |    admin privileges  |
+   |                       +---- Grant attacker ---+
+   |                       |    admin privileges   |
    |                       |                       |
-   |<-- Granted admin -----+                       |
+   |<-- Granted admin -----|                       |
    |    Access!            |                       |
 
-Result: EXPLOIT SUCCESSFUL - Attacker is now admin!
+Result: EXPLOIT SUCCESSFUL - Attacker is now admin
 ```
 
-Secure Version:
+### Secure Version
 ```
 Attacker                Program                 Accounts
    |                       |                       |
@@ -68,20 +68,20 @@ Attacker                Program                 Accounts
    |                       |                       |---- Fake Config
    |                       |                       |    (attacker owned)
    |                       |                       |
-   |--- Call instruction --+                       |
+   |--- Call instruction --|                       |
    |    with fake config   |                       |
    |                       |                       |
-   |                       +---- CHECK OWNER -----+
-   |                       |    config.owner?     |
-   |                       |<------- Fake config  |
-   |                       |    owner != program  |
+   |                       +---- CHECK OWNER ------+
+   |                       |    config.owner?      |
+   |                       |<------- Fake config   |
+   |                       |    owner != program   |
    |                       |                       |
-   |                       +---- REJECT! --------+
+   |                       +---- REJECT! ----------+
    |                       |
    |<-- Error: IllegalOwner|
    |    Access Denied!     |
 
-Result: EXPLOIT BLOCKED - Attacker denied access!
+Result: EXPLOIT BLOCKED - Attacker denied access
 ```
 
 ## Files
@@ -89,8 +89,8 @@ Result: EXPLOIT BLOCKED - Attacker denied access!
 | File | Purpose |
 |------|---------|
 | `lib.rs` | Program entry point and instruction routing |
-| `vulnerable.rs` | ❌ Missing owner check |
-| `secure.rs` | ✅ Proper owner verification |
+| `vulnerable.rs` | Missing owner check (VULNERABLE) |
+| `secure.rs` | Proper owner verification (SECURE) |
 
 ## Key Differences
 
@@ -135,7 +135,7 @@ cargo test -p owner-check-tests
 
 ## Mitigation Checklist
 
-- [ ] Always verify `account.owner == program_id` before reading program-owned data
-- [ ] In Anchor, use `Account<'info, T>` which automatically verifies ownership
-- [ ] For system-owned accounts, verify `account.owner == system_program`
-- [ ] For token accounts, verify `account.owner == token_program`
+- Always verify `account.owner == program_id` before reading program-owned data
+- In Anchor, use `Account<'info, T>` which automatically verifies ownership
+- For system-owned accounts, verify `account.owner == system_program`
+- For token accounts, verify `account.owner == token_program`

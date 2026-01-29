@@ -5,21 +5,21 @@
 
 ## Overview
 
-This program demonstrates the "Account Reloading" vulnerability where deserialized account data becomes stale after a CPI modifies the underlying account.
+This program demonstrates the Account Reloading vulnerability where deserialized account data becomes stale after a CPI modifies the underlying account.
 
 ## The Vulnerability
 
 Anchor deserializes accounts at instruction entry. After a CPI, the on-chain account data may change, but your `Account<T>` wrapper still holds the old values.
 
 ```rust
-// ❌ VULNERABLE: counter.balance is STALE after CPI
+// VULNERABLE: counter.balance is STALE after CPI
 token::transfer(cpi_ctx, 100)?;
 // counter still shows old balance - CPI updated it but we have stale copy!
 if counter.balance > threshold {  // WRONG! Using stale data
     // Logic based on incorrect state
 }
 
-// ✅ SECURE: Reload after CPI
+// SECURE: Reload after CPI
 token::transfer(cpi_ctx, 100)?;
 counter.reload()?;  // Refresh from storage
 if counter.balance > threshold {  // CORRECT! Using fresh data
@@ -42,8 +42,8 @@ if counter.balance > threshold {  // CORRECT! Using fresh data
 |------|---------|
 | `lib.rs` | Program entry points |
 | `state.rs` | Counter account structure |
-| `vulnerable.rs` | ❌ No reload after CPI |
-| `secure.rs` | ✅ reload() pattern demonstrated |
+| `vulnerable.rs` | No reload after CPI (VULNERABLE) |
+| `secure.rs` | reload() pattern demonstrated (SECURE) |
 | `error.rs` | Custom error types |
 
 ## Key Differences
@@ -82,8 +82,8 @@ cargo test -p account-reloading-tests
 
 ## Mitigation Checklist
 
-- [ ] Call `.reload()` on any account modified by CPI
-- [ ] Audit all CPI calls for accounts used after the call
-- [ ] Be especially careful with balance/amount checks after transfers
-- [ ] Consider defensive reloads before critical calculations
-- [ ] Document which CPIs modify which accounts
+- Call `.reload()` on any account modified by CPI
+- Audit all CPI calls for accounts used after the call
+- Be especially careful with balance/amount checks after transfers
+- Consider defensive reloads before critical calculations
+- Document which CPIs modify which accounts

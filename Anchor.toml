@@ -17,6 +17,8 @@ insecure_init = "4jYJ4EhViLDVKAswFSX84LnFdb8FetpAPWsqxyXaa5cK"
 account_reloading = "GBMScyniY2yFUdFQRyBQ9QyHD7qUmJQZmvwJvhbSavG9"
 remaining_accounts = "Eypux1FctAjxFzjEXyP6RGab8brjy2LtBU9dtQThFacP"
 authority_transfer = "3APkTen4wwfvKAyjrwxCaCWVKEkwagJd5cXwJeFkefVS"
+account_griefing = "GWRZSqQP37DEg6R7hEmBHVBDyWJNVwRAPtDduwGhtQqp"
+multisig_payer = "Fvat4mBGBnCbz7eGpTYUUJq2gQ4bwevt5AYhAVibmjC2"
 
 [registry]
 url = "https://api.apr.dev"

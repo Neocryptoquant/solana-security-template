@@ -5,18 +5,18 @@
 
 ## Overview
 
-This program demonstrates a common escrow vulnerability where the refund instruction doesn't verify that the refund destination matches the original maker (depositor).
+This program demonstrates a common escrow vulnerability where the refund instruction does not verify that the refund destination matches the original maker (depositor).
 
 ## The Vulnerability
 
 When refunding an escrow, the program must verify the destination matches the stored maker. Without this check, attackers can redirect refunds to themselves.
 
 ```rust
-// ❌ VULNERABLE: No verification that destination is the maker
+// VULNERABLE: No verification that destination is the maker
 let destination = accounts[3];  // Attacker can pass any account!
 transfer_tokens(escrow_vault, destination, amount)?;
 
-// ✅ SECURE: Verify destination matches stored maker
+// SECURE: Verify destination matches stored maker
 if destination.key() != escrow.maker {
     return Err(ProgramError::InvalidAccountData);
 }
@@ -25,7 +25,7 @@ if destination.key() != escrow.maker {
 ## Attack Scenario
 
 1. Alice creates escrow depositing 100 tokens
-2. Trade doesn't complete, Alice requests refund
+2. Trade does not complete, Alice requests refund
 3. Attacker front-runs with their own refund call
 4. Attacker passes their wallet as destination
 5. Attacker receives Alice's 100 tokens
@@ -37,10 +37,10 @@ if destination.key() != escrow.maker {
 | `lib.rs` | Entry point and instruction routing |
 | `state.rs` | Escrow account structure |
 | `instructions/` | |
-| ├─ `make.rs` | Create escrow |
-| ├─ `take.rs` | Complete trade |
-| ├─ `vulnerable_refund.rs` | ❌ No maker verification |
-| └─ `secure_refund.rs` | ✅ Proper maker check |
+| `make.rs` | Create escrow |
+| `take.rs` | Complete trade |
+| `vulnerable_refund.rs` | No maker verification (VULNERABLE) |
+| `secure_refund.rs` | Proper maker check (SECURE) |
 
 ## Key Differences
 
@@ -81,8 +81,8 @@ cargo test -p p-escrow-tests
 
 ## Mitigation Checklist
 
-- [ ] Store maker pubkey in escrow account
-- [ ] Verify caller is maker before allowing refund
-- [ ] Verify destination matches stored maker
-- [ ] Use Anchor's `has_one` constraint for automatic verification
-- [ ] Consider time-locked refunds to prevent race conditions
+- Store maker pubkey in escrow account
+- Verify caller is maker before allowing refund
+- Verify destination matches stored maker
+- Use Anchor's `has_one` constraint for automatic verification
+- Consider time-locked refunds to prevent race conditions

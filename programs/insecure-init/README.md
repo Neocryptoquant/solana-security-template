@@ -5,14 +5,14 @@
 
 ## Overview
 
-This program demonstrates the "Insecure Initialization" vulnerability where critical program state (like admin configuration) can be re-initialized by attackers to take control.
+This program demonstrates the Insecure Initialization vulnerability where critical program state (like admin configuration) can be re-initialized by attackers to take control.
 
 ## The Vulnerability
 
-If initialization logic doesn't check whether an account is already initialized, attackers can call initialize again to overwrite the admin:
+If initialization logic does not check whether an account is already initialized, attackers can call initialize again to overwrite the admin:
 
 ```rust
-// ❌ VULNERABLE: init_if_needed without is_initialized check
+// VULNERABLE: init_if_needed without is_initialized check
 #[account(init_if_needed, payer = payer, space = 64, seeds = [b"config"], bump)]
 pub config: Account<'info, Config>,
 
@@ -20,7 +20,7 @@ pub fn initialize(&mut self, admin: Pubkey) {
     self.config.admin = admin;  // Overwrites existing!
 }
 
-// ✅ SECURE: Use `init` which fails if account exists
+// SECURE: Use `init` which fails if account exists
 #[account(init, payer = payer, space = 64, seeds = [b"config"], bump)]
 pub config: Account<'info, Config>,
 
@@ -42,8 +42,8 @@ require!(!self.config.is_initialized, Error::AlreadyInitialized);
 |------|---------|
 | `lib.rs` | Program entry points |
 | `state.rs` | Config account with is_initialized flag |
-| `vulnerable.rs` | ❌ init_if_needed without guard |
-| `secure.rs` | ✅ init constraint OR is_initialized check |
+| `vulnerable.rs` | init_if_needed without guard (VULNERABLE) |
+| `secure.rs` | init constraint OR is_initialized check (SECURE) |
 | `error.rs` | Custom error types |
 
 ## Key Differences
@@ -96,8 +96,8 @@ cargo test -p insecure-init-tests
 
 ## Mitigation Checklist
 
-- [ ] Prefer `init` over `init_if_needed` for one-time initialization
-- [ ] If using `init_if_needed`, ALWAYS check `is_initialized` flag
-- [ ] Add `is_initialized: bool` to all config accounts
-- [ ] Consider making admin transfer a separate, protected instruction
-- [ ] Audit all initialization paths for re-init vulnerabilities
+- Prefer `init` over `init_if_needed` for one-time initialization
+- If using `init_if_needed`, ALWAYS check `is_initialized` flag
+- Add `is_initialized: bool` to all config accounts
+- Consider making admin transfer a separate, protected instruction
+- Audit all initialization paths for re-init vulnerabilities

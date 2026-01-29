@@ -36,12 +36,13 @@ mod tests {
     }
 
     fn discriminator(name: &str) -> [u8; 8] {
-        use std::collections::hash_map::DefaultHasher;
-        use std::hash::{Hash, Hasher};
-        let full_name = format!("global:{}", name);
-        let mut hasher = DefaultHasher::new();
-        full_name.hash(&mut hasher);
-        hasher.finish().to_le_bytes()
+        use sha2::{Digest, Sha256};
+        let mut hasher = Sha256::new();
+        hasher.update(format!("global:{}", name).as_bytes());
+        let result = hasher.finalize();
+        let mut disc = [0u8; 8];
+        disc.copy_from_slice(&result[..8]);
+        disc
     }
 
     fn setup() -> (LiteSVM, Keypair) {

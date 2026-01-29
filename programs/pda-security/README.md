@@ -15,10 +15,10 @@ PDAs are derived deterministically from seeds. If seeds are predictable or insuf
 3. Impersonate or hijack user accounts
 
 ```rust
-// ❌ VULNERABLE: Only user pubkey - predictable, no uniqueness
+// VULNERABLE: Only user pubkey - predictable, no uniqueness
 seeds = [b"user", user.key().as_ref()]
 
-// ✅ SECURE: Includes random nonce for uniqueness
+// SECURE: Includes random nonce for uniqueness
 seeds = [b"user", user.key().as_ref(), &nonce.to_le_bytes()]
 ```
 
@@ -31,61 +31,61 @@ seeds = [b"user", user.key().as_ref(), &nonce.to_le_bytes()]
 
 ## Attack Flow
 
-Vulnerable Version:
+### Vulnerable Version
 ```
 Victim              Attacker           Blockchain
  |                    |                     |
- |-- Prepare tx ---+   |                     |
- |   create_user   |   |                     |
- |                 |   |-- Observe pending tx|
- |                 |   |                     |
- |                 |   |-- Compute PDA -----+
- |                 |   |   (same as victim) |
- |                 |   |                     |
- |-- Send tx -----+    |-- Front-run -------+
- |                |    |   Create same PDA  |
- |                |    |                     |
- |                |    |   Attacker owns    |
- |                |    |   the PDA now!     |
- |                |    |                     |
- |                |    +-- Victim tx: ------+
- |                |    |   "Account exists" |
- |                |    |   FAILS!           |
- |                |    |                     |
- |<-- Error! -----+    |<-- Success! -------+
- |   Can't create         Attacker hijacked!
+ |-- Prepare tx ------|                     |
+ |   create_user      |                     |
+ |                    |-- Observe pending tx|
+ |                    |                     |
+ |                    |-- Compute PDA ------+
+ |                    |   (same as victim)  |
+ |                    |                     |
+ |-- Send tx ---------|-- Front-run --------+
+ |                    |   Create same PDA   |
+ |                    |                     |
+ |                    |   Attacker owns     |
+ |                    |   the PDA now!      |
+ |                    |                     |
+ |                    +-- Victim tx: -------+
+ |                    |   "Account exists"  |
+ |                    |   FAILS!            |
+ |                    |                     |
+ |<-- Error! ---------+<-- Success! --------+
+ |   Cannot create    |   Attacker hijacked!|
 
-Result: EXPLOIT SUCCESSFUL - Attacker hijacks account!
+Result: EXPLOIT SUCCESSFUL - Attacker hijacks account
 ```
 
-Secure Version:
+### Secure Version
 ```
 Victim              Attacker           Blockchain
  |                    |                     |
- |-- Create random ----+                     |
- |   nonce             |                     |
- |                     |                     |
- |-- Prepare tx ---+   |                     |
- |   create_user   |   |-- Observe pending tx|
- |   (with nonce)  |   |                     |
- |                 |   |-- Try to compute --+
- |                 |   |   PDA (need nonce) |
- |                 |   |                     |
- |                 |   |   No way to know   |
- |                 |   |   victim's nonce!  |
- |                 |   |                     |
- |-- Send tx -----+    |-- Can't front-run! |
- |                |    |                     |
- |                |    +-- Even if attacker|
- |                |    |   creates account, |
- |                |    |   it's different!  |
- |                |    |   (different nonce)|
- |                |    |                     |
- |<-- Success! ---+    |<-- Fails! --------+
- |   Account created    Exploit blocked!
- |   with victim nonce
+ |-- Create random ---|                     |
+ |   nonce            |                     |
+ |                    |                     |
+ |-- Prepare tx ------|                     |
+ |   create_user      |-- Observe pending tx|
+ |   (with nonce)     |                     |
+ |                    |-- Try to compute ---+
+ |                    |   PDA (need nonce)  |
+ |                    |                     |
+ |                    |   No way to know    |
+ |                    |   victim's nonce!   |
+ |                    |                     |
+ |-- Send tx ---------|-- Cannot front-run! |
+ |                    |                     |
+ |                    +-- Even if attacker  |
+ |                    |   creates account,  |
+ |                    |   it's different!   |
+ |                    |   (different nonce) |
+ |                    |                     |
+ |<-- Success! -------+<-- Fails! ----------+
+ |   Account created  |   Exploit blocked!  |
+ |   with victim nonce|                     |
 
-Result: EXPLOIT BLOCKED - Nonce prevents front-running!
+Result: EXPLOIT BLOCKED - Nonce prevents front-running
 ```
 
 ## Files
@@ -94,8 +94,8 @@ Result: EXPLOIT BLOCKED - Nonce prevents front-running!
 |------|---------|
 | `lib.rs` | Program entry points |
 | `state.rs` | User account structure |
-| `vulnerable.rs` | ❌ Weak seeds (user pubkey only) |
-| `secure.rs` | ✅ Strong seeds (includes nonce) |
+| `vulnerable.rs` | Weak seeds (user pubkey only) (VULNERABLE) |
+| `secure.rs` | Strong seeds (includes nonce) (SECURE) |
 | `error.rs` | Custom error types |
 
 ## Key Differences
@@ -134,8 +134,8 @@ cargo test -p pda-seeds-tests
 
 ## Mitigation Checklist
 
-- [ ] Include user-controlled random nonce in seeds
-- [ ] Use Anchor's canonical bump handling (`bump` constraint)
-- [ ] Never store user-provided bump - derive fresh each time
-- [ ] For global config, use program authority as seed
-- [ ] Document seed structure for each PDA type
+- Include user-controlled random nonce in seeds
+- Use Anchor's canonical bump handling (`bump` constraint)
+- Never store user-provided bump - derive fresh each time
+- For global config, use program authority as seed
+- Document seed structure for each PDA type

@@ -12,13 +12,13 @@ This program demonstrates the danger of using `ctx.remaining_accounts` without m
 Anchor's `remaining_accounts` are completely unvalidated. No owner check, no type check, no constraints. Attackers can pass any accounts they want.
 
 ```rust
-// ❌ VULNERABLE: Blindly trusting remaining_accounts
+// VULNERABLE: Blindly trusting remaining_accounts
 for account in ctx.remaining_accounts.iter() {
     // Attacker passed malicious accounts here!
     credit_rewards(account, amount)?;
 }
 
-// ✅ SECURE: Validate each account manually
+// SECURE: Validate each account manually
 for account in ctx.remaining_accounts.iter() {
     require!(account.owner == &program_id, Error::InvalidOwner);
     let data = account.try_borrow_data()?;
@@ -41,8 +41,8 @@ for account in ctx.remaining_accounts.iter() {
 |------|---------|
 | `lib.rs` | Program entry points |
 | `state.rs` | Config and recipient structures |
-| `vulnerable.rs` | ❌ No remaining_accounts validation |
-| `secure.rs` | ✅ Manual validation of each account |
+| `vulnerable.rs` | No remaining_accounts validation (VULNERABLE) |
+| `secure.rs` | Manual validation of each account (SECURE) |
 | `error.rs` | Custom error types |
 
 ## Key Differences
@@ -85,8 +85,8 @@ cargo test -p remaining-accounts-tests
 
 ## Mitigation Checklist
 
-- [ ] Always validate owner of remaining_accounts
-- [ ] Check discriminator/type before deserializing
-- [ ] Verify business logic (eligibility, whitelist, etc.)
-- [ ] Consider using declared accounts when count is known
-- [ ] Document expected format of remaining_accounts
+- Always validate owner of remaining_accounts
+- Check discriminator/type before deserializing
+- Verify business logic (eligibility, whitelist, etc.)
+- Consider using declared accounts when count is known
+- Document expected format of remaining_accounts

@@ -2,17 +2,19 @@
 
 ![CI](https://github.com/Ubuntu-Technologies/solana-security-template/actions/workflows/ci.yml/badge.svg)
 
-A collection of Solana programs demonstrating common smart contract vulnerabilities and their fixes. Each program includes vulnerable and secure implementations with tests that prove exploits fail after remediation.
+This repository offers a collection of Solana programs that attempts to demonstrate common attack vectors as relating to smart contract (solana programs in this context) and how to mitigate those vulnerabilities.. Each program includes vulnerable and secure implementations with tests that prove exploits fail after remediation. In line with achieving my weird dream of 100% Rust only on this repository, I decided to write all tests as well as workflows in Rust. To make the best of the repo, think like an elite hacker, break things, and fix them, and build better programs. Meanwhile, a checklist for you here. Ciao!
 
 ## Overview
 
-This repository provides hands-on examples of 12 critical vulnerabilities in Solana programs. Each vulnerability is isolated in its own program with:
+This repository provides hands-on examples of several critical vulnerabilities that can be found in Solana programs. Each vulnerability is isolated in its own program with:
 
-- **Vulnerable implementation** — Code that can be exploited
-- **Secure implementation** — The same code with proper defenses
+- **Vulnerable implementation** — An iteration of the code that can be exploited. Deliberately written as such for educational purposes.
+- **Secure implementation** — The same code with proper defenses 
 - **LiteSVM tests** — Demonstrates the exploit and verifies the fix
 
 The programs use both Anchor and Pinocchio frameworks to show patterns across different development approaches.
+
+For a comprehensive deep-dive on all vulnerabilities, see [Gemini_article.md](Gemini_article.md) which includes two additional vulnerability patterns from J4X_Security's research: Account Creation Griefing and Multisig as Payer.
 
 ## Getting Started
 
@@ -21,7 +23,8 @@ The programs use both Anchor and Pinocchio frameworks to show patterns across di
 | Component | Version |
 |-----------|---------|
 | Rust | 1.89.0 |
-| Solana CLI | 2.2.1+ |
+| Solana CLI | 3.0.11; client:Agave)
+ |
 | Anchor | 0.32.1 |
 
 ### Installation
@@ -64,6 +67,8 @@ cd trident-tests/fuzz_targets && cargo test
 | Stale Data After CPI | [account-reloading](programs/account-reloading/) | Medium | Anchor | Call `reload()` after CPI |
 | Unvalidated Remaining | [remaining-accounts](programs/remaining-accounts/) | Medium | Anchor | Validate owner and type manually |
 | Insecure Authority | [authority-transfer](programs/authority-transfer/) | Critical | Anchor | Two-step propose/accept pattern |
+| Account Griefing | [account-griefing](programs/account-griefing/) | Medium | Anchor | Add nonce to PDA seeds |
+| Multisig as Payer | [multisig-payer](programs/multisig-payer/) | Low | Anchor | Separate rent payer from authority |
 | Multiple Combined | [amm](programs/amm/) | Critical | Anchor | All of the above |
 
 ## Quick Reference
@@ -194,6 +199,8 @@ programs/
 ├── account-reloading/        # Stale data after CPI
 ├── remaining-accounts/       # Unvalidated remaining accounts
 ├── authority-transfer/       # Insecure authority transfer
+├── account-griefing/         # Account creation DOS via pre-funding
+├── multisig-payer/           # PDA cannot be payer for init
 └── amm/
     ├── buggy-amm/            # Multiple vulnerabilities combined
     └── secure-amm/           # Fixed implementation
