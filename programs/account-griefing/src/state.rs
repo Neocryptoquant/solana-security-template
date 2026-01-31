@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 
 /// Stake account storing user's staked amount
 #[account]
-#[derive(InitSpace)]
+#[derive(InitSpace, Default)]
 pub struct StakeAccount {
     /// Owner of the stake
     pub owner: Pubkey,

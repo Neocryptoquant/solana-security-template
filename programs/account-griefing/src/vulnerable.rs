@@ -11,6 +11,7 @@
 
 use anchor_lang::prelude::*;
 use crate::state::StakeAccount;
+use crate::error::StakeError;
 
 #[derive(Accounts)]
 pub struct VulnerableCreateStake<'info> {
